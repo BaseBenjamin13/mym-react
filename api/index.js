@@ -3,14 +3,14 @@ const axios = require('axios');
 require('dotenv').config();
 require('ejs');
 const app = express();
-const User = require('./db/models/userM');
+const User = require('../db/models/userM');
 
 const path = require('path');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
-const initializePassport = require('./passport-config');
+const initializePassport = require('../passport-config');
 initializePassport(
     passport,
     userName => users.find(user => user.userName === userName),
