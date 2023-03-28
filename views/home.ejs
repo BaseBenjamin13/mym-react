@@ -47,6 +47,10 @@
 <% if(user){ %>
     <div>
         <h1>Hello <%= user.userName %></h1>
+        <form action="/logout" method="POST">
+            <button type="submit" class="logout-btn">Log Out</button>
+        </form>
+        <br>
         <img src="<%=data.hdurl %>" />
     </div>
 <% } %>  
