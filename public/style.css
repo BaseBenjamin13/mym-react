@@ -1,6 +1,7 @@
 
 body {
-    /* justify-content: center; */
+    background-color: black;
+    color: white
 }
 
 .header {
@@ -14,4 +15,8 @@ body {
 .registerForm, .loginForm {
     width: 30vw;
     margin: 0 auto;
+}
+
+.user-container {
+    text-align: center;
 }
