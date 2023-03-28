@@ -1,0 +1,17 @@
+
+body {
+    /* justify-content: center; */
+}
+
+.header {
+    text-align: center;
+    margin: 1rem;
+}
+.forms-container {
+    display: flex;
+    justify-content: center;
+}
+.registerForm, .loginForm {
+    width: 30vw;
+    margin: 0 auto;
+}

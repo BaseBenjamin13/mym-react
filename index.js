@@ -5,6 +5,7 @@ require('ejs');
 const app = express();
 const User = require('./db/models/userM');
 
+const path = require('path');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
@@ -26,6 +27,7 @@ User.find()
 
 app.set('view engine', 'ejs');
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(flash());
@@ -44,11 +46,9 @@ app.get('/', (req, res) => {
     axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
         .then(data => {
             if (req.isAuthenticated()) {
-                console.log('Authenticated')
                 res.render('./home', {data: data.data, user: req.user})
             } else {
                 res.render('./home', {data: data.data, user: false})
-                console.log('NOT Authenticated')
             }
         })
         .catch(err => console.log(err))
