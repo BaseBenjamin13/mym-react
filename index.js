@@ -26,7 +26,7 @@ User.find()
 
 app.set('view engine', 'ejs');
 
-
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(flash());
 app.use(session({
@@ -49,6 +49,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
+    console.log(req.body)
         if (req.body.userName && req.body.password) {
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
             User.create({
@@ -58,12 +59,13 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
             .then(() => {          
                 User.find()
                 .then((usersR) => {
-                    // res.redirect('/');
+                    res.redirect('/');
                     return users = usersR;
                 })
                 .catch(console.error);
             })
         } else {
+            res.redirect('/');
             console.log('username and password are required');
         }
 })
