@@ -43,31 +43,43 @@ app.use(passport.session());
 app.get('/', (req, res) => {
     axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
         .then(data => {
-            res.render('./home', {data: data.data, user: false})
+            if (req.isAuthenticated()) {
+                console.log('Authenticated')
+                res.render('./home', {data: data.data, user: req.user})
+            } else {
+                res.render('./home', {data: data.data, user: false})
+                console.log('NOT Authenticated')
+            }
         })
         .catch(err => console.log(err))
 })
 
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', { 
+    successRedirect: '/',
+    failureRedirect: '/',
+    failureFlash: true
+}))
+
 app.post('/register', checkNotAuthenticated, async (req, res) => {
     console.log(req.body)
-        if (req.body.userName && req.body.password) {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10)
-            User.create({
-                userName: req.body.userName,
-                password: hashedPassword
+    if (req.body.userName && req.body.password) {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        User.create({
+            userName: req.body.userName,
+            password: hashedPassword
+        })
+        .then(() => {
+            User.find()
+            .then((usersR) => {
+                res.redirect('/');
+                return users = usersR;
             })
-            .then(() => {          
-                User.find()
-                .then((usersR) => {
-                    res.redirect('/');
-                    return users = usersR;
-                })
-                .catch(console.error);
-            })
-        } else {
-            res.redirect('/');
-            console.log('username and password are required');
-        }
+            .catch(console.error);
+        })
+    } else {
+        res.redirect('/');
+        console.log('username and password are required');
+    }
 })
 
 
@@ -78,6 +90,7 @@ function checkNotAuthenticated(req, res, next){
     }
     next();
 }
+
 
 
 const port = process.env.PORT || 8080;
