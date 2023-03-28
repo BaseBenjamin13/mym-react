@@ -12,7 +12,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
     axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
         .then(data => {
-            console.log(data.data.hdurl);
+            // console.log(data.data.hdurl);
+            res.render('./home', {data: data.data})
         })
         .catch(err => console.log(err))
 })
