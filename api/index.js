@@ -5,6 +5,7 @@ require('ejs');
 const app = express();
 const User = require('./db/models/userM');
 
+const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -30,20 +31,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(flash());
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.REACT_APP_SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.get('/', (req, res) => {
-    axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
+
+app.use(cors());
+
+
+app.get('/api', (req, res) => {
+    axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.REACT_APP_API_KEY}`)
         .then(data => {
             if (req.isAuthenticated()) {
                 console.log('Authenticated')
-                res.render('./home', {data: data.data, user: req.user})
+                res.json({data: data.data, user: req.user})
             } else {
-                res.render('./home', {data: data.data, user: false})
+                res.json({data: data.data, user: false})
                 console.log('NOT Authenticated')
             }
         })
@@ -54,7 +59,7 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
     failureRedirect: '/',
     failureFlash: true
 }))
-app.post('/register', checkNotAuthenticated, async (req, res) => {
+app.post('/api/register', checkNotAuthenticated, async (req, res) => {
     console.log(req.body)
     if (req.body.userName && req.body.password) {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)

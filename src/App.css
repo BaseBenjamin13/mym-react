@@ -60,3 +60,7 @@ body {
 .user-container {
     text-align: center;
 }
+
+.img-day {
+    max-width: 80vw;
+}
