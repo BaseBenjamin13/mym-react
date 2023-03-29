@@ -46,9 +46,9 @@ app.get('/', (req, res) => {
     axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
         .then(data => {
             if (req.isAuthenticated()) {
-                res.render('./home', {data: data.data, user: req.user})
+                res.render('../views/home.ejs', {data: data.data, user: req.user})
             } else {
-                res.render('./home', {data: data.data, user: false})
+                res.render('../views/home.ejs', {data: data.data, user: false})
             }
         })
         .catch(err => console.log(err))
