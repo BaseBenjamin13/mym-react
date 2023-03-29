@@ -101,7 +101,7 @@ function checkNotAuthenticated(req, res, next){
 }
 if(process.env.REACT_APP_PORT){
     app.listen(process.env.REACT_APP_PORT, () => {
-        console.log(`server ${port} is running`);
+        console.log(`server ${process.env.REACT_APP_PORT} is running`);
     })
 }
 
