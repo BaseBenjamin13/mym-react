@@ -1,0 +1,5 @@
+custom:
+  webpack:
+    includeModules:
+      forceInclude:
+        - pg
