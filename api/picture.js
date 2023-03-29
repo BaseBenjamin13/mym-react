@@ -55,8 +55,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', { 
-    successRedirect: '/',
-    failureRedirect: '/',
+    successRedirect: '/api/picture',
+    failureRedirect: '/api/picture',
     failureFlash: true
 }))
 
@@ -71,13 +71,13 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
         .then(() => {
             User.find()
             .then((usersR) => {
-                res.redirect('/');
+                res.redirect('/api/picture');
                 return users = usersR;
             })
             .catch(console.error);
         })
     } else {
-        res.redirect('/');
+        res.redirect('/api/picture');
         console.log('username and password are required');
     }
 })
@@ -85,17 +85,18 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
 app.post('/logout', (req, res) => {
     req.logout((err) => {
         if(err) return next(err);
-        res.redirect('/');
+        res.redirect('/api/picture');
     });
 })
 
 
 function checkNotAuthenticated(req, res, next){
     if (req.isAuthenticated()) {
-        return res.redirect('/');
+        return res.redirect('/api/picture');
     }
     next();
 }
 
+module.exports = app;
 
 

@@ -2,14 +2,14 @@ const express = require('express');
 require('dotenv').config();
 require('ejs');
 const app = express();
-const User = require('../db/models/userM');
+const User = require('./db/models/userM');
 const picture = require('./api/picture');
 
 const path = require('path');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
-const initializePassport = require('../passport-config');
+const initializePassport = require('./passport-config');
 initializePassport(
     passport,
     userName => users.find(user => user.userName === userName),
@@ -26,7 +26,7 @@ User.find()
 
 app.set('view engine', 'ejs');
 
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(flash());
@@ -41,7 +41,7 @@ app.use(passport.session());
 
 app.use("/api/picture", picture);
 
-app.get('/favicon.ico', (req, res) => res.status(204));
+// app.get('/favicon.ico', (req, res) => res.status(204));
 
 
 const port = process.env.PORT || 8080;
