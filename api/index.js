@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 require('ejs');
-const app = express();
+const router = express();
 const User = require('../db/models/userM');
 
 const path = require('path');
@@ -25,42 +25,42 @@ User.find()
     .catch(console.error);
 
 
-app.set('view engine', 'ejs');
+router.set('view engine', 'ejs');
 
-app.use(express.static(path.join(__dirname, '../public')));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(flash());
-app.use(session({
+router.use(express.static(path.join(__dirname, '../public')));
+router.use(express.urlencoded({ extended: false }));
+router.use(express.json());
+router.use(flash());
+router.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
+router.use(passport.initialize());
+router.use(passport.session());
 
 
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
     axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
         .then(data => {
             if (req.isAuthenticated()) {
-                res.render('../views/home.ejs', {data: data.data, user: req.user})
+                res.render('/home', {data: data.data, user: req.user})
             } else {
-                res.render('../views/home.ejs', {data: data.data, user: false})
+                res.render('/home', {data: data.data, user: false})
             }
         })
         .catch(err => console.log(err))
 })
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', { 
+router.post('/login', checkNotAuthenticated, passport.authenticate('local', { 
     successRedirect: '/api/picture',
     failureRedirect: '/api/picture',
     failureFlash: true
 }))
 
-app.post('/register', checkNotAuthenticated, async (req, res) => {
+router.post('/register', checkNotAuthenticated, async (req, res) => {
     console.log(req.body)
     if (req.body.userName && req.body.password) {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -82,7 +82,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     }
 })
 
-app.post('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
     req.logout((err) => {
         if(err) return next(err);
         res.redirect('/api/picture');
@@ -97,6 +97,7 @@ function checkNotAuthenticated(req, res, next){
     next();
 }
 
-module.exports = app;
+module.exports = router;
+
 
 

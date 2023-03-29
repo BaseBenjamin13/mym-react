@@ -45,7 +45,10 @@ app.use("/api/picture", picture);
 
 
 const port = process.env.PORT || 8080;
+if(process.env.PORT){
+    app.listen(port, () => {
+        console.log(`server ${port} is running`);
+    })
+}
 
-app.listen(port, () => {
-    console.log(`server ${port} is running`);
-})
+module.exports = app;
