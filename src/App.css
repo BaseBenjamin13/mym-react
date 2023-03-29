@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+body {
+    background-color: black;
+    color: white
+}
+
+.header {
+    text-align: center;
+    margin: 1rem;
+}
+.forms-container {
+    display: flex;
+    justify-content: center;
+}
+.registerForm, .loginForm {
+    width: 30vw;
+    margin: 0 auto;
+}
+
+.user-container {
+    text-align: center;
+}
