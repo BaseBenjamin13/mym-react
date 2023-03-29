@@ -99,7 +99,10 @@ function checkNotAuthenticated(req, res, next){
     }
     next();
 }
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-    console.log(`server ${port} is running`);
-})
+if(process.env.REACT_APP_PORT){
+    app.listen(process.env.REACT_APP_PORT, () => {
+        console.log(`server ${port} is running`);
+    })
+}
+
+module.exports = app;
