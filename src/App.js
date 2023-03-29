@@ -11,13 +11,8 @@ function App() {
         console.log('ran useEffect');
         axios.get(`${process.env.REACT_APP_API_URL}/`)
             .then((res) => {
-                console.log(res);
                 setData(res.data.data);
                 setUser(res.data.user);
-            })
-            .then(() => {
-                console.log(user);
-                console.log(data);
             })
             .catch(err => console.log(err));
         }, [])
@@ -37,6 +32,26 @@ function App() {
             })
                 .then((res) => {
                     setUser(res.data.user);
+                })
+                .catch(err => console.log(err));
+        }
+
+        const handleLogin = (e) => {
+            e.preventDefault();
+            console.log(e.target.userName.value)
+            axios({
+                method: 'post',
+                url: `${process.env.REACT_APP_API_URL}/login`,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    data: {
+                        "userName": e.target.userName.value,
+                        "password": e.target.password.value
+                    }
+            })
+                .then((user) => {
+                    setUser(user.data);
                 })
                 .catch(err => console.log(err));
         }
@@ -78,7 +93,8 @@ function App() {
                 {!user &&
                     <div className="loginForm">
                         <h2>Login</h2>
-                        <form action="/login" method="POST">
+                        <form onSubmit={handleLogin}>
+                        {/* <form action='http://localhost:8080/api/login' method='post'> */}
                             <div className="input-group flex-nowrap">
                                 <span className="input-group-text" id="addon-wrapping">@</span>
                                 <input type="text" className="form-control" name="userName" placeholder="userName here"
@@ -102,9 +118,12 @@ function App() {
             {user &&
                 <div className="user-container">
                     <h1>Hello {user.userName}</h1>
-                    <form action="/logout" method="POST">
+                    
+                    <button onClick={() => setUser(false)} className="btn-danger">Log Out</button>
+                    <br></br>
+                    {/* <form onSubmit={handleLogout}>
                         <button type="submit" className="btn-danger">Log Out</button>
-                    </form>
+                    </form> */}
                     <img className="img-day" src={data.hdurl} alt='NASAs picture of the day'/>
                 </div>
             }

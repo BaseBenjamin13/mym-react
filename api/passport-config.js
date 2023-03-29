@@ -1,4 +1,3 @@
-
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 
@@ -27,5 +26,7 @@ function initialize(passport, getUserByUserName, getUserById) {
     })
 }
 
+
+module.exports = initialize;
 
 module.exports = initialize;

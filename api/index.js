@@ -4,7 +4,6 @@ require('dotenv').config();
 require('ejs');
 const app = express();
 const User = require('./db/models/userM');
-
 const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcrypt');
@@ -26,6 +25,8 @@ User.find()
 
 app.set('view engine', 'ejs');
 
+
+app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -37,10 +38,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(cors());
-
-
 app.get('/api', (req, res) => {
     axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.REACT_APP_API_KEY}`)
         .then(data => {
@@ -54,13 +51,23 @@ app.get('/api', (req, res) => {
         })
         .catch(err => console.log(err))
 })
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', { 
-    successRedirect: '/',
-    failureRedirect: '/',
-    failureFlash: true
-}))
+app.post('/api/login', (req, res) => {
+
+    User.find({userName: req.body.userName})
+        .then((user) => {
+            if(bcrypt.compare(req.body.password, user[0].password)){
+                res.json(user[0])
+            } else {
+                res.json('Sorry, wrong password.')
+            }
+        })
+})
+// app.post('/api/login', checkNotAuthenticated, passport.authenticate('local', { 
+//     successRedirect: '/api',
+//     failureRedirect: '/',
+//     failureFlash: true
+// }))
 app.post('/api/register', checkNotAuthenticated, async (req, res) => {
-    console.log(req.body)
     if (req.body.userName && req.body.password) {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         User.create({
@@ -70,17 +77,17 @@ app.post('/api/register', checkNotAuthenticated, async (req, res) => {
         .then(() => {
             User.find()
             .then((usersR) => {
-                res.redirect('/');
+                res.redirect('/api');
                 return users = usersR;
             })
             .catch(console.error);
         })
     } else {
-        res.redirect('/');
+        res.redirect('/api');
         console.log('username and password are required');
     }
 })
-app.post('/logout', (req, res) => {
+app.post('/api/logout', (req, res) => {
     req.logout((err) => {
         if(err) return next(err);
         res.redirect('/');
