@@ -1,11 +1,12 @@
 const express = require('express');
+const axios = require('axios');
 require('dotenv').config();
 require('ejs');
 const app = express();
 const User = require('./db/models/userM');
-const picture = require('./api/picture');
 
 const path = require('path');
+const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
@@ -15,14 +16,12 @@ initializePassport(
     userName => users.find(user => user.userName === userName),
     id => users.find(user => user.id === id)
 )
-
 let users = [];
 User.find()
     .then((usersR) => {
         return users = usersR;
     })
     .catch(console.error);
-
 
 app.set('view engine', 'ejs');
 
@@ -35,20 +34,60 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use("/api/picture", picture);
-
-// app.get('/favicon.ico', (req, res) => res.status(204));
-
-
-const port = process.env.PORT || 8080;
-if(process.env.PORT){
-    app.listen(port, () => {
-        console.log(`server ${port} is running`);
-    })
+app.get('/', (req, res) => {
+    axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
+        .then(data => {
+            if (req.isAuthenticated()) {
+                console.log('Authenticated')
+                res.render('./home', {data: data.data, user: req.user})
+            } else {
+                res.render('./home', {data: data.data, user: false})
+                console.log('NOT Authenticated')
+            }
+        })
+        .catch(err => console.log(err))
+})
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', { 
+    successRedirect: '/',
+    failureRedirect: '/',
+    failureFlash: true
+}))
+app.post('/register', checkNotAuthenticated, async (req, res) => {
+    console.log(req.body)
+    if (req.body.userName && req.body.password) {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        User.create({
+            userName: req.body.userName,
+            password: hashedPassword
+        })
+        .then(() => {
+            User.find()
+            .then((usersR) => {
+                res.redirect('/');
+                return users = usersR;
+            })
+            .catch(console.error);
+        })
+    } else {
+        res.redirect('/');
+        console.log('username and password are required');
+    }
+})
+app.post('/logout', (req, res) => {
+    req.logout((err) => {
+        if(err) return next(err);
+        res.redirect('/');
+    });
+})
+function checkNotAuthenticated(req, res, next){
+    if (req.isAuthenticated()) {
+        return res.redirect('/');
+    }
+    next();
 }
-
-module.exports = app;
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+    console.log(`server ${port} is running`);
+})
