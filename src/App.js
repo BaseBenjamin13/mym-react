@@ -16,7 +16,6 @@ function App() {
         axios.get(`${process.env.REACT_APP_API_URL}/`)
             .then((res) => {
                 setData(res.data.data);
-                // setUser(res.data.user);
             })
             .catch(err => console.log(err));
     }, [])
@@ -42,7 +41,7 @@ function App() {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        console.log(e.target.userName.value)
+
         axios({
             method: 'post',
             url: `${process.env.REACT_APP_API_URL}/login`,
@@ -67,7 +66,7 @@ function App() {
         <div className="App">
             <h1 className="header">NASA: Image Of The Day</h1>
 
-            { !user && <h2 className="header">Login to see the image of the day</h2>}
+            {!user && <h2 className="header">Login to see the image of the day</h2>}
 
             <div className="forms-container">
 
@@ -113,7 +112,6 @@ function App() {
                             <div className="loginForm">
                                 <h2>Login</h2>
                                 <form onSubmit={handleLogin}>
-                                    {/* <form action='http://localhost:8080/api/login' method='post'> */}
                                     <div className="input-group flex-nowrap">
                                         <span className="input-group-text" id="addon-wrapping">@</span>
                                         <input type="text" className="form-control" name="userName" placeholder="userName here"
@@ -144,9 +142,6 @@ function App() {
 
                     <button onClick={() => setUser(false)} className="btn-danger">Log Out</button>
                     <br></br>
-                    {/* <form onSubmit={handleLogout}>
-                        <button type="submit" className="btn-danger">Log Out</button>
-                    </form> */}
                     <img className="img-day" src={data.hdurl} alt='NASAs picture of the day' />
                 </div>
             }

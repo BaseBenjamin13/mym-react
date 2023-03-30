@@ -23,14 +23,14 @@ function GoogleOauth({ setUser }) {
             }
         )
 
-        
+
         google.accounts.id.prompt();
 
     }, [])
 
     return (
-        <div >
-            <div id="g-signin2" className='google-login'></div>
+        <div className='google-login'>
+            <div id="g-signin2"></div>
         </div>
     )
 }
