@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
-import axios from 'axios';
 
 function GoogleOauth({ setUser }) {
 
@@ -17,20 +16,21 @@ function GoogleOauth({ setUser }) {
         })
 
         google.accounts.id.renderButton(
-            document.getElementById('signInDiv'),
+            document.getElementById('g-signin2'),
             {
                 theme: 'outline',
                 size: 'large'
             }
         )
 
+        
         google.accounts.id.prompt();
 
     }, [])
 
     return (
-        <div>
-            <div id="signInDiv"></div>
+        <div >
+            <div id="g-signin2" className='google-login'></div>
         </div>
     )
 }

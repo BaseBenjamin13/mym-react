@@ -3,6 +3,9 @@ import './App.css';
 import axios from 'axios';
 import GoogleOauth from './components/GoogleOauth';
 
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+
 function App() {
 
     const [user, setUser] = useState(false);
@@ -64,59 +67,74 @@ function App() {
         <div className="App">
             <h1 className="header">NASA: Image Of The Day</h1>
 
+            <h2 className="header">Login to see the image of the day</h2>
+
             <div className="forms-container">
 
                 {!user &&
-                    <>
+                    <Tabs>
+                        <TabList>
+                            <Tab>Google Login</Tab>
+                            <Tab>Register</Tab>
+                            <Tab>Login</Tab>
+                        </TabList>
+
+                        <TabPanel>
+                            <GoogleOauth setUser={setUser} />
+                        </TabPanel>
+
+                        <TabPanel>
+                            <div className="registerForm">
+                                <h2>Register</h2>
+                                <form onSubmit={handleRegister}>
+                                    <div className="input-group flex-nowrap">
+                                        <span className="input-group-text" id="addon-wrapping">@</span>
+                                        <input type="text" className="form-control" name="userName" placeholder="userName here"
+                                            aria-label="Username" aria-describedby="addon-wrapping" />
+                                    </div>
+                                    <p className="required">Required ^</p>
+
+                                    <div className="input-group flex-nowrap">
+                                        <span className="input-group-text" id="addon-wrapping">Password</span>
+                                        <input type="text" className="form-control" name="password" placeholder="password here"
+                                            aria-describedby="addon-wrapping" />
+                                    </div>
+                                    <p className="required">Required ^</p>
+
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+
+                        </TabPanel>
 
 
-                        <div className="registerForm">
-                            <h2>Register</h2>
-                            <form onSubmit={handleRegister}>
-                                <div className="input-group flex-nowrap">
-                                    <span className="input-group-text" id="addon-wrapping">@</span>
-                                    <input type="text" className="form-control" name="userName" placeholder="userName here"
-                                        aria-label="Username" aria-describedby="addon-wrapping" />
-                                </div>
-                                <p className="required">Required ^</p>
 
-                                <div className="input-group flex-nowrap">
-                                    <span className="input-group-text" id="addon-wrapping">Password</span>
-                                    <input type="text" className="form-control" name="password" placeholder="password here"
-                                        aria-describedby="addon-wrapping" />
-                                </div>
-                                <p className="required">Required ^</p>
+                        <TabPanel>
+                            <div className="loginForm">
+                                <h2>Login</h2>
+                                <form onSubmit={handleLogin}>
+                                    {/* <form action='http://localhost:8080/api/login' method='post'> */}
+                                    <div className="input-group flex-nowrap">
+                                        <span className="input-group-text" id="addon-wrapping">@</span>
+                                        <input type="text" className="form-control" name="userName" placeholder="userName here"
+                                            aria-label="Username" aria-describedby="addon-wrapping" />
+                                    </div>
+                                    <p className="required">Required ^</p>
 
-                                <button type="submit" className="btn btn-primary">Submit</button>
-                            </form>
-                        </div>
+                                    <div className="input-group flex-nowrap">
+                                        <span className="input-group-text" id="addon-wrapping">Password</span>
+                                        <input type="text" className="form-control" name="password" placeholder="password here"
+                                            aria-describedby="addon-wrapping" />
+                                    </div>
+                                    <p className="required">Required ^</p>
 
-                        <GoogleOauth setUser={setUser} />
+                                    {passwordError && <h2 style={{ color: 'red' }}>{passwordError}</h2>}
 
-                        <div className="loginForm">
-                            <h2>Login</h2>
-                            <form onSubmit={handleLogin}>
-                                {/* <form action='http://localhost:8080/api/login' method='post'> */}
-                                <div className="input-group flex-nowrap">
-                                    <span className="input-group-text" id="addon-wrapping">@</span>
-                                    <input type="text" className="form-control" name="userName" placeholder="userName here"
-                                        aria-label="Username" aria-describedby="addon-wrapping" />
-                                </div>
-                                <p className="required">Required ^</p>
-
-                                <div className="input-group flex-nowrap">
-                                    <span className="input-group-text" id="addon-wrapping">Password</span>
-                                    <input type="text" className="form-control" name="password" placeholder="password here"
-                                        aria-describedby="addon-wrapping" />
-                                </div>
-                                <p className="required">Required ^</p>
-
-                                {passwordError && <h2 style={{ color: 'red' }}>{passwordError}</h2>}
-
-                                <button type="submit" className="btn btn-primary">Submit</button>
-                            </form>
-                        </div>
-                    </>
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </TabPanel>
+                    </Tabs>
                 }
 
             </div>

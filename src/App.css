@@ -51,9 +51,10 @@ body {
 .forms-container {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .registerForm, .loginForm {
-    width: 30vw;
+    width: 25vw;
     margin: 0 auto;
 }
 
@@ -62,5 +63,8 @@ body {
 }
 
 .img-day {
+    background-color: #282c34;
+    margin: 2rem;
+    padding: 0.5rem;
     max-width: 80vw;
 }
