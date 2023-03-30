@@ -16,7 +16,7 @@ function App() {
         axios.get(`${process.env.REACT_APP_API_URL}/`)
             .then((res) => {
                 setData(res.data.data);
-                setUser(res.data.user);
+                // setUser(res.data.user);
             })
             .catch(err => console.log(err));
     }, [])
@@ -34,8 +34,8 @@ function App() {
                 "password": e.target.password.value
             }
         })
-            .then((res) => {
-                setUser(res.data.user);
+            .then((user) => {
+                setUser(user.data);
             })
             .catch(err => console.log(err));
     }
@@ -67,7 +67,7 @@ function App() {
         <div className="App">
             <h1 className="header">NASA: Image Of The Day</h1>
 
-            <h2 className="header">Login to see the image of the day</h2>
+            { !user && <h2 className="header">Login to see the image of the day</h2>}
 
             <div className="forms-container">
 
