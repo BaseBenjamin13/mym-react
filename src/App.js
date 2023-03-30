@@ -10,7 +10,8 @@ function App() {
 
     const [user, setUser] = useState(false);
     const [data, setData] = useState();
-    const [passwordError, setPasswordError] = useState();
+    const [loginError, setLoginError] = useState();
+    const [registerError, setRegisterError] = useState();
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/`)
@@ -22,6 +23,9 @@ function App() {
 
     const handleRegister = (e) => {
         e.preventDefault();
+
+        setRegisterError();
+
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_API_URL}/register`,
@@ -34,13 +38,19 @@ function App() {
             }
         })
             .then((user) => {
-                setUser(user.data);
+                if(user.data.errMessage){
+                    setRegisterError(user.data.errMessage);
+                }else {
+                    setUser(user.data);
+                }
             })
             .catch(err => console.log(err));
     }
 
     const handleLogin = (e) => {
         e.preventDefault();
+
+        setLoginError();
 
         axios({
             method: 'post',
@@ -54,13 +64,22 @@ function App() {
             }
         })
             .then((user) => {
-                if (typeof user.data.userName === "string") {
-                    setUser(user.data);
-                } else setPasswordError('Wrong password, try again.')
+                if(user.data.errMessage){
+                    setLoginError(user.data.errMessage);
+                } else {
+                    if (typeof user.data.userName === "string") {
+                        setUser(user.data);
+                    } else setLoginError('Wrong password, try again.')
+                }
             })
             .catch(err => console.log(err));
     }
 
+    const handleLogout = () => {
+        setRegisterError();
+        setUser();
+        setLoginError();
+    }
 
     return (
         <div className="App">
@@ -100,6 +119,8 @@ function App() {
                                     </div>
                                     <p className="required">Required ^</p>
 
+                                    {registerError && <h2 style={{ color: 'red' }}>{registerError}</h2>}
+
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
                             </div>
@@ -126,7 +147,7 @@ function App() {
                                     </div>
                                     <p className="required">Required ^</p>
 
-                                    {passwordError && <h2 style={{ color: 'red' }}>{passwordError}</h2>}
+                                    {loginError && <h2 style={{ color: 'red' }}>{loginError}</h2>}
 
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
@@ -140,7 +161,7 @@ function App() {
                 <div className="user-container">
                     <h1>Hello {user.userName}</h1>
 
-                    <button onClick={() => setUser(false)} className="btn-danger">Log Out</button>
+                    <button onClick={handleLogout} className="btn-danger">Log Out</button>
                     <br></br>
                     <img className="img-day" src={data.hdurl} alt='NASAs picture of the day' />
                 </div>
