@@ -6,6 +6,7 @@ function App() {
 
     const [user, setUser] = useState(false);
     const [data, setData] = useState();
+    const [passwordError, setPasswordError] = useState();
 
     useEffect(() => {
         console.log('ran useEffect');
@@ -51,7 +52,9 @@ function App() {
                     }
             })
                 .then((user) => {
-                    setUser(user.data);
+                    if(typeof user.data.userName === "string"){
+                        setUser(user.data);
+                    } else setPasswordError('Wrong password, try again.')
                 })
                 .catch(err => console.log(err));
         }
@@ -109,13 +112,15 @@ function App() {
                             </div>
                             <p className="required">Required ^</p>
 
+                            {passwordError && <h2 style={{color: 'red'}}>{passwordError}</h2>}
+
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </div>
                 }
 
                 </div>
-            {user &&
+            {user && data &&
                 <div className="user-container">
                     <h1>Hello {user.userName}</h1>
                     

@@ -54,9 +54,9 @@ app.get('/api', (req, res) => {
 app.post('/api/login', (req, res) => {
 
     User.find({userName: req.body.userName})
-        .then((user) => {
-            if(bcrypt.compare(req.body.password, user[0].password)){
-                res.json(user[0])
+        .then(async(user) => {
+            if( await bcrypt.compare(req.body.password, user[0].password)){
+                if(user[0].userName) res.json(user[0])
             } else {
                 res.json('Sorry, wrong password.')
             }
